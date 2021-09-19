@@ -8,6 +8,6 @@ public class Example {
         System.out.println(mailBox.getMail());
         if (mailBox.waitNewMail(45000))
             System.out.println(Arrays.toString(mailBox.getEmails()));
-        System.out.println("Timed out... No emails received");
+        else System.out.println("Timed out... No emails received");
     }
 }
