@@ -49,7 +49,9 @@ public class TemporaryMailBox {
             try {
                 if (getEmails().length > currentMails)
                     received = true;
-            } catch (Exception ignored){}
+            } catch (Exception e){
+                e.printStackTrace();
+            }
 
             try { Thread.sleep(500);
             } catch (InterruptedException e) { e.printStackTrace(); }
@@ -57,16 +59,18 @@ public class TemporaryMailBox {
         return received;
     }
 
-    public Mail[] getEmails() throws IOException {
+    public Mail[] getEmails() {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("https://privatix-temp-mail-v1.p.rapidapi.com/request/mail/id/" + md5 + "/format/json/")
                 .method("GET", null)
                 .addHeader("X-RapidAPI-Key", apiKey)
                 .build();
-        String json = Objects.requireNonNull(client.newCall(request).execute().body()).string();
-        //System.out.println(json);
-        return new Gson().fromJson(json, Mail[].class);
+        Mail[] emails = new Mail[0];
+        try {
+            emails = new Gson().fromJson(Objects.requireNonNull(client.newCall(request).execute().body()).string(), Mail[].class);
+        } catch (Exception ignored) {}
+        return emails;
     }
 
     public String randomMail() throws IOException {
